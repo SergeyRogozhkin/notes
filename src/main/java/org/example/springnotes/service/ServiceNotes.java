@@ -10,6 +10,6 @@ public interface ServiceNotes {
     List<Note> findAllNotes();
     Note createNote(Note noteEntity);
     Note findNoteById(int id);
-    Note updateNote(Note note);
+    Note updateNote(int id, Note note);
     void deleteNote(int id);
 }

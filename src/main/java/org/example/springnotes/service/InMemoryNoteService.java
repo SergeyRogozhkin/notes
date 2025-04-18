@@ -29,8 +29,8 @@ public class InMemoryNoteService implements ServiceNotes {
     }
 
     @Override
-    public Note updateNote(Note note) {
-        return repository.updateNote(note);
+    public Note updateNote(int id, Note note) {
+        return repository.updateNote(id,note);
     }
 
     @Override

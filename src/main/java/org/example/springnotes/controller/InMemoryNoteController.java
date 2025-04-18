@@ -26,9 +26,9 @@ public class InMemoryNoteController implements NoteController {
         return new ResponseEntity<>(service.createNote(note), HttpStatus.OK);
     }
 
-    @PutMapping("update_note")
-    public ResponseEntity<Note> updateNote(@RequestBody Note note) {
-        return new ResponseEntity<>(service.updateNote(note), HttpStatus.OK);
+    @PutMapping("update/{id}")
+    public ResponseEntity<Note> updateNote(@PathVariable int id, @RequestBody Note note) {
+        return new ResponseEntity<>(service.updateNote(id, note), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -37,7 +37,8 @@ public class InMemoryNoteController implements NoteController {
     }
 
     @DeleteMapping("delete_note/{id}")
-    public ResponseEntity<Note> deleteNote(@RequestBody Note note) {
+    public ResponseEntity<Note> deleteNote(@PathVariable int id) {
+        service.deleteNote(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -10,7 +10,7 @@ public interface NoteController {
 
     ResponseEntity<List<Note>> getAllNotes();
     ResponseEntity<Note> createNote(Note note);
-    ResponseEntity<Note> updateNote(Note note);
+    ResponseEntity<Note> updateNote(int id, Note note);
     ResponseEntity<Note> getNoteById(int id);
-    ResponseEntity<Note> deleteNote(Note note);
+    ResponseEntity<Note> deleteNote(int id);
 }

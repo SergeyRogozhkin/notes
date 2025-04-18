@@ -3,8 +3,10 @@ package org.example.springnotes.repository;
 import org.example.springnotes.model.Note;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Repository
@@ -29,16 +31,14 @@ public class InMemoryRepository {
                 .orElse(null);
     }
 
-    public Note updateNote(Note note) {
-        int noteIndex = IntStream.range(0, NOTES_IN_MEMORY.size())
-                .filter(index -> NOTES_IN_MEMORY.get(index).getNameNote().equals(note.getNameNote()))
-                .findFirst()
-                .orElse(-1);
-        if (noteIndex != -1) {
-            NOTES_IN_MEMORY.set(noteIndex, note);
-            return note;
+    public Note updateNote(int id, Note note) {
+
+        //проверить на нул
+        Note note1 = NOTES_IN_MEMORY.get(id);
+        if (note1 != null) {
+            NOTES_IN_MEMORY.set(id, note);
         }
-        return null;
+        return note1;
     }
 
     public void deleteNote(int id) {
