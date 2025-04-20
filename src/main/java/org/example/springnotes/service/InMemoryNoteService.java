@@ -21,11 +21,6 @@ public class InMemoryNoteService implements ServiceNotes {
         return repository.getAllNotes();
     }
 
-//    @Override
-//    public Note createNote(Note note) {
-//        return repository.createNote(note);
-//    }
-
     public Note createNote(Note note) {
         if (note == null) {
             throw new InvalidNoteDataException("Заметка не может быть null.");
@@ -40,7 +35,6 @@ public class InMemoryNoteService implements ServiceNotes {
         return repository.createNote(note);
     }
 
-
     @Override
     public Note findNoteById(int id) {
         Note note = repository.getNoteById(id);
@@ -49,7 +43,6 @@ public class InMemoryNoteService implements ServiceNotes {
         }
         return note;
     }
-
 
     @Override
     public Note updateNote(int id, Note note) {
@@ -61,7 +54,6 @@ public class InMemoryNoteService implements ServiceNotes {
             throw new NoteNotFoundException(id);
         }
         return repository.updateNote(id, note);
-
     }
 
     @Override
