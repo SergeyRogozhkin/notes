@@ -14,12 +14,11 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class Test_InMemoryNoteController {
+public class TestInMemoryNoteController {
 
     @Mock
     private InMemoryNoteService service;
@@ -28,16 +27,16 @@ public class Test_InMemoryNoteController {
     private InMemoryNoteController controller;
 
     @Test
-    void getAllNotes_successful() {
+    void getAllNotes_WhenNotesExist_ReturnsNoteList() {
         List<Note> expectedNotes = new ArrayList<>();
         Note note1 = new Note();
         note1.setId(1);
-        note1.setNameNote("Note 1");
-        note1.setTextNote("Text of note 1");
+        note1.setName("Note 1");
+        note1.setText("Text of note 1");
         Note note2 = new Note();
         note2.setId(2);
-        note2.setNameNote("Note 2");
-        note2.setTextNote("Text of note 2");
+        note2.setName("Note 2");
+        note2.setText("Text of note 2");
         expectedNotes.add(note1);
         expectedNotes.add(note2);
         when(service.findAllNotes()).thenReturn(expectedNotes);
@@ -47,44 +46,59 @@ public class Test_InMemoryNoteController {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
-        assertEquals("Note 1", response.getBody().get(0).getNameNote());
-        assertEquals("Text of note 1", response.getBody().get(0).getTextNote());
-        assertEquals("Note 2", response.getBody().get(1).getNameNote());
-        assertEquals("Text of note 2", response.getBody().get(1).getTextNote());
+        assertEquals("Note 1", response.getBody().get(0).getName());
+        assertEquals("Text of note 1", response.getBody().get(0).getText());
+        assertEquals("Note 2", response.getBody().get(1).getName());
+        assertEquals("Text of note 2", response.getBody().get(1).getText());
 
         verify(service).findAllNotes();
     }
 
     @Test
-    void createNote_successful() {
+    void createNote_WhenValidNoteProvided_ReturnsCreatedNote() {
         Note note = new Note();
         note.setId(1);
-        note.setNameNote("Note 1");
-        note.setTextNote("Text of note 1");
+        note.setName("Note 1");
+        note.setText("Text of note 1");
         when(service.createNote(note)).thenReturn(note);
 
         ResponseEntity<Note> response = controller.createNote(note);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Note 1", response.getBody().getNameNote());
-        assertEquals("Text of note 1", response.getBody().getTextNote());
+        assertEquals("Note 1", response.getBody().getName());
+        assertEquals("Text of note 1", response.getBody().getText());
 
         verify(service).createNote(note);
     }
 
     @Test
-    void updateNote_successful() {
-        //todo апдейт тест
+    void updateNote_WhenNoteExists_ReturnsUpdatedNote() {
+        Note updatedNote = new Note();
+        updatedNote.setId(1);
+        updatedNote.setName("Updated Name");
+        updatedNote.setText("Updated Text");
+
+        when(service.updateNote(1, updatedNote)).thenReturn(updatedNote);
+
+        ResponseEntity<Note> response = controller.updateNote(1, updatedNote);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals("Updated Name", response.getBody().getName());
+        assertEquals("Updated Text", response.getBody().getText());
+
+        verify(service).updateNote(1, updatedNote);
     }
 
     @Test
-    void getNoteById_successful() {
+    void getNoteById_WhenNoteExists_ReturnsNote() {
         int id = 1;
         Note expectedNote = new Note();
         expectedNote.setId(id);
-        expectedNote.setNameNote("Test Name");
-        expectedNote.setTextNote("Test Text");
+        expectedNote.setName("Test Name");
+        expectedNote.setText("Test Text");
 
         when(service.findNoteById(id)).thenReturn(expectedNote);
 
@@ -93,20 +107,29 @@ public class Test_InMemoryNoteController {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("Test Name", response.getBody().getNameNote());
-        assertEquals("Test Text", response.getBody().getTextNote());
+        assertEquals("Test Name", response.getBody().getName());
+        assertEquals("Test Text", response.getBody().getText());
         assertEquals(1, response.getBody().getId());
 
         verify(service).findNoteById(id);
     }
 
     @Test
-    void getNoteById_notFound() {
-        //todo тест файнд бай айди нот фаунд
+    void getNoteById_WhenNoteNotFound_ReturnsOkWithNullBody() {
+        int id = 999;
+        when(service.findNoteById(id)).thenReturn(null);  // Возвращается null
+
+        ResponseEntity<Note> response = controller.getNoteById(id);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());  // Ожидается OK
+        assertNull(response.getBody());  // Но тело — null
+
+        verify(service).findNoteById(id);
     }
 
     @Test
-    void deleteNote_successful() {
+    void deleteNote_WhenNoteExists_ReturnsOk() {
         int id = 1;
         ResponseEntity<Note> response = controller.deleteNote(id);
 
@@ -116,7 +139,7 @@ public class Test_InMemoryNoteController {
     }
 
     @Test
-    void deleteNote_notFound() {
+    void deleteNote_WhenNoteDoesNotExist_ReturnsOk() {
         int id = 999;
         doNothing().when(service).deleteNote(id);// Мокаем поведение сервиса, например, что сервис не выбрасывает исключение
 

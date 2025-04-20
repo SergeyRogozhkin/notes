@@ -1,13 +1,11 @@
 package org.example.springnotes.repository;
 
+import org.example.springnotes.exeption.NoteNotFoundException;
 import org.example.springnotes.model.Note;
 import org.springframework.stereotype.Repository;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 
 @Repository
 public class InMemoryRepository {
@@ -28,12 +26,11 @@ public class InMemoryRepository {
         return NOTES_IN_MEMORY.stream()
                 .filter(element -> element.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoteNotFoundException(id)); // выбрасываем исключение, если не нашли
     }
 
     public Note updateNote(int id, Note note) {
 
-        //проверить на нул
         Note note1 = NOTES_IN_MEMORY.get(id);
         if (note1 != null) {
             NOTES_IN_MEMORY.set(id, note);

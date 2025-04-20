@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Component
 @Data
 public class Note implements Serializable {
-    private String nameNote;
-    private String textNote;
+    private String name;
+    private String text;
     private int id;
 }

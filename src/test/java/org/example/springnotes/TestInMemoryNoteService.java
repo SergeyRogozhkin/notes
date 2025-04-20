@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class Test_InMemoryNoteService {
+public class TestInMemoryNoteService {
     @Mock
     private InMemoryRepository repository;
 
@@ -30,12 +30,12 @@ public class Test_InMemoryNoteService {
         List<Note> expectedNotes = new ArrayList<>();
         Note note1 = new Note();
         note1.setId(1);
-        note1.setNameNote("Note 1");
-        note1.setTextNote("Text of note 1");
+        note1.setName("Note 1");
+        note1.setText("Text of note 1");
         Note note2 = new Note();
         note2.setId(2);
-        note2.setNameNote("Note 2");
-        note2.setTextNote("Text of note 2");
+        note2.setName("Note 2");
+        note2.setText("Text of note 2");
         expectedNotes.add(note1);
         expectedNotes.add(note2);
         when(repository.getAllNotes()).thenReturn(expectedNotes);
@@ -50,8 +50,8 @@ public class Test_InMemoryNoteService {
     void createNote_returnsCreatedNote() {
         Note note = new Note();
         note.setId(1);
-        note.setNameNote("Note 1");
-        note.setTextNote("Text of note 1");
+        note.setName("Note 1");
+        note.setText("Text of note 1");
         when(repository.createNote(note)).thenReturn(note);
 
         Note result = service.createNote(note);
@@ -65,8 +65,8 @@ public class Test_InMemoryNoteService {
         int id = 1;
         Note note = new Note();
         note.setId(id);
-        note.setNameNote("Note 1");
-        note.setTextNote("Text of note 1");
+        note.setName("Note 1");
+        note.setText("Text of note 1");
         when(repository.getNoteById(id)).thenReturn(note);
 
         Note result = service.findNoteById(id);
@@ -80,13 +80,21 @@ public class Test_InMemoryNoteService {
         int id = 1;
         Note updatedNote = new Note();
         updatedNote.setId(id);
-        updatedNote.setNameNote("Note 1");
-        updatedNote.setTextNote("Text of note 1");
+        updatedNote.setName("Note 1");
+        updatedNote.setText("Text of note 1");
+
+        Note existingNote = new Note();
+        existingNote.setId(id);
+        existingNote.setName("Old name");
+        existingNote.setText("Old text");
+
+        when(repository.getNoteById(id)).thenReturn(existingNote);
         when(repository.updateNote(id, updatedNote)).thenReturn(updatedNote);
 
         Note result = service.updateNote(id, updatedNote);
 
         assertEquals(updatedNote, result);
+        verify(repository).getNoteById(id);
         verify(repository).updateNote(id, updatedNote);
     }
 

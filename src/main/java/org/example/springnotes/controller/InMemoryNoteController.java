@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/notes")
 @AllArgsConstructor
-public class InMemoryNoteController implements NoteController {
+public class InMemoryNoteController {
 
     private InMemoryNoteService service;
 
